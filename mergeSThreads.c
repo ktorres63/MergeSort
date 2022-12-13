@@ -4,7 +4,7 @@
 #include <semaphore.h>
 #define SIZE 6
 
-int arr[SIZE];
+int arr[SIZE]={12,11,13,5,6,7};
 sem_t mutex;
 typedef struct Composicion{
     int left; //izq
@@ -14,8 +14,8 @@ typedef struct Composicion{
 void merge(int l, int m, int r){
     int i,j,k;
 
-    int n1 = m-l+1;
-    int n2 = r-m;
+    int n1 = m-l+1; // tam izq
+    int n2 = r-m;   // tam der
 
     //Create temp arrays
 
@@ -36,7 +36,7 @@ void merge(int l, int m, int r){
 
     //initial index of merged subarray
     k = l;
-    sem_wait(&mutex);
+//    sem_wait(&mutex);
     while(i < n1 && j < n2){
         if(L[i] <= R[j]){
             arr[k] = L[i];
@@ -62,7 +62,7 @@ void merge(int l, int m, int r){
         j++;
         k++;
     }
-    sem_post(&mutex);
+  //  sem_post(&mutex);
 }
 
 
@@ -87,10 +87,11 @@ void* mergeSort(void* a){
         pthread_create(&tle,NULL,mergeSort,&pi);
         pthread_create(&tri,NULL,mergeSort,&pd);
 
+        merge(l,m,r);
+
         pthread_join(tle,NULL);
         pthread_join(tri,NULL);
 
-        merge(l,m,r);
 
     }
 
@@ -104,7 +105,7 @@ void printArray(int A[], int size){
 }
 
 int main(){
-    int arr[SIZE] ={12,11,13,5,6,7};
+   // arr[SIZE] ={12,11,13,5,6,7};
     pthread_t tid;
 
     cmp e;
@@ -115,6 +116,7 @@ int main(){
     printArray(arr,SIZE);
 
     sem_init(&mutex,0,1);
+
 
     pthread_create(&tid,NULL,mergeSort,&e);
     pthread_join(tid,NULL);
