@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#define SIZE 6
 void merge(int arr[], int l, int m, int r){
     int i,j,k;
 
@@ -73,8 +73,8 @@ void printArray(int A[], int size){
 }
 
 int main(){
-    int arr[]={12,11,13,5,6,7};
-    int arr_size = sizeof(arr) / sizeof(arr[0]);
+    int arr[SIZE]={12,11,13,5,6,7};
+    int arr_size = SIZE;
 
     printf("given array is \n");
     printArray(arr, arr_size);
