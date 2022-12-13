@@ -4,7 +4,7 @@
 #include <semaphore.h>
 #define SIZE 6
 
-int arr[SIZE]={12,11,13,5,6,7};
+int arr[SIZE];
 sem_t mutex;
 typedef struct Composicion{
     int left; //izq
@@ -105,7 +105,14 @@ void printArray(int A[], int size){
 }
 
 int main(){
-   // arr[SIZE] ={12,11,13,5,6,7};
+   arr[0] =12;
+   arr[1] =11;
+   arr[2] =13;
+   arr[3] =5;
+   arr[4] =6;
+   arr[5] =7;
+
+       //,11,13,5,6,7};
     pthread_t tid;
 
     cmp e;
