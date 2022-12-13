@@ -11,13 +11,88 @@ typedef struct Composicion{
     int right; //der
 } cmp;
 
+void merge(int l, int m, int r){
+    int i,j,k;
 
-void merge(){
+    int n1 = m-l+1;
+    int n2 = r-m;
 
+    //Create temp arrays
+
+    int L[n1], R[n2];
+
+    //copy data to temp arrays
+    for (i=0;i<n1;i++)
+        L[i] = arr[l+i];
+    for(j=0;j< n2;j++)
+        R[j] = arr[m+1+j];
+
+    //Merge the temp arrays back
+    //into arr[l..r]
+    //initial index of first subarray
+    i = 0;
+    //initiañ index of second subarray
+    j = 0;
+
+    //initial index of merged subarray
+    k = l;
+    sem_wait(&mutex);
+    while(i < n1 && j < n2){
+        if(L[i] <= R[j]){
+            arr[k] = L[i];
+            i++;
+        }
+        else{
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    //copy the reimaining elements
+    //of L[], if there any
+    while(i < n1){
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    //copy the remaining elements of
+    //R[], if there any
+    while(j < n2){
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+    sem_post(&mutex);
 }
-void* mergeSort(void* a){
-    cmp t1;
 
+
+void* mergeSort(void* a){
+    cmp *g = a;
+    int l = g->left;
+    int r = g->right;
+    pthread_t tle, tri;
+
+
+    if(l < r){
+        int m = l+(r-l)/2;
+        cmp pi,pd;
+
+        //parte izq
+        pi.left = l;
+        pi.right = m;
+        //parte derecha
+        pd.left = m+1;
+        pd.right = r;
+
+        pthread_create(&tle,NULL,mergeSort,&pi);
+        pthread_create(&tri,NULL,mergeSort,&pd);
+
+        pthread_join(tle,NULL);
+        pthread_join(tri,NULL);
+
+        merge(l,m,r);
+
+    }
 
 }
 void printArray(int A[], int size){
@@ -46,7 +121,5 @@ int main(){
 
     printf("\nSorted array is\n");
     printArray(arr,SIZE);
-
-
 
 }
