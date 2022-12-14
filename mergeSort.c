@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define SIZE 6
+#include <time.h>
+#define SIZE 100
 void merge(int arr[], int l, int m, int r){
     int i,j,k;
 
@@ -17,14 +18,9 @@ void merge(int arr[], int l, int m, int r){
     for(j=0;j< n2;j++)
         R[j] = arr[m+1+j];
 
-    //Merge the temp arrays back
-    //into arr[l..r]
-    //initial index of first subarray
     i = 0;
-    //initiañ index of second subarray
     j = 0;
 
-    //initial index of merged subarray
     k = l;
     while(i < n1 && j < n2){
         if(L[i] <= R[j]){
@@ -37,14 +33,12 @@ void merge(int arr[], int l, int m, int r){
         }
         k++;
     }
-    //copy the reimaining elements
-    //of L[], if there any
+    //L[] if there any
     while(i < n1){
         arr[k] = L[i];
         i++;
         k++;
     }
-    //copy the remaining elements of
     //R[], if there any
     while(j < n2){
         arr[k] = R[j];
@@ -75,23 +69,28 @@ void printArray(int A[], int size){
 }
 
 int main(){
+    double time_spent = 0.0;
+    clock_t begin = clock();
+
     srand(time(NULL));
-    int arr[SIZE]={10,9,9,1,0,3};
-/*
+    int arr[SIZE];
     for (int i=0;i<SIZE;i++){
         arr[i] = rand()%9;
     }
 
-    */
     int arr_size = SIZE;
 
-    printf("given array is \n");
+    printf("Lista inicial is \n");
     printArray(arr, SIZE);
 
     mergeSort(arr,0,SIZE-1);
 
-    printf("\nSorted array is\n");
+    printf("\nLista Ordenada \n");
     printArray(arr,arr_size);
-    return 0;
+    clock_t end = clock();
+
+    time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("Tiempo de ejecucion %f segundos\n", time_spent);
+
 
 }
