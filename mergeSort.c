@@ -75,13 +75,20 @@ void printArray(int A[], int size){
 }
 
 int main(){
-    int arr[SIZE]={12,11,13,5,6,7};
+    srand(time(NULL));
+    int arr[SIZE]={10,9,9,1,0,3};
+/*
+    for (int i=0;i<SIZE;i++){
+        arr[i] = rand()%9;
+    }
+
+    */
     int arr_size = SIZE;
 
     printf("given array is \n");
-    printArray(arr, arr_size);
+    printArray(arr, SIZE);
 
-    mergeSort(arr,0,arr_size-1);
+    mergeSort(arr,0,SIZE-1);
 
     printf("\nSorted array is\n");
     printArray(arr,arr_size);

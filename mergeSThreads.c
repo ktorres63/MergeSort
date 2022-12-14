@@ -6,7 +6,10 @@
 
 int arr[SIZE];
 sem_t mutex;
+pthread_mutex_t lock;
+
 typedef struct Composicion{
+    int id;
     int left; //izq
     int right; //der
 } cmp;
@@ -21,6 +24,7 @@ void merge(int l, int m, int r){
 
     int L[n1], R[n2];
 
+//    sem_wait(&mutex);
     //copy data to temp arrays
     for (i=0;i<n1;i++)
         L[i] = arr[l+i];
@@ -36,7 +40,8 @@ void merge(int l, int m, int r){
 
     //initial index of merged subarray
     k = l;
-//    sem_wait(&mutex);
+    sem_wait(&mutex);
+    //pthread_mutex_lock(&lock);
     while(i < n1 && j < n2){
         if(L[i] <= R[j]){
             arr[k] = L[i];
@@ -62,20 +67,21 @@ void merge(int l, int m, int r){
         j++;
         k++;
     }
-  //  sem_post(&mutex);
+    //pthread_mutex_unlock(&lock);
+    sem_post(&mutex);
 }
 
 
 void* mergeSort(void* a){
     cmp *g = a;
+    cmp pi,pd;
     int l = g->left;
     int r = g->right;
     pthread_t tle, tri;
 
-
+//    pthread_mutex_unlock(&lock);
     if(l < r){
         int m = l+(r-l)/2;
-        cmp pi,pd;
 
         //parte izq
         pi.left = l;
@@ -87,13 +93,13 @@ void* mergeSort(void* a){
         pthread_create(&tle,NULL,mergeSort,&pi);
         pthread_create(&tri,NULL,mergeSort,&pd);
 
-        merge(l,m,r);
-
         pthread_join(tle,NULL);
         pthread_join(tri,NULL);
 
+        merge(l,m,r);
 
     }
+
 
 }
 void printArray(int A[], int size){
@@ -105,25 +111,31 @@ void printArray(int A[], int size){
 }
 
 int main(){
-   arr[0] =12;
-   arr[1] =11;
-   arr[2] =13;
-   arr[3] =5;
-   arr[4] =6;
-   arr[5] =7;
+    /*
+    srand(time(NULL));
+    for(int i=0;i<SIZE;i++){
+        arr[i] = rand()%10+1;
+    }
+*/
+    arr[0]=10;
+    arr[1]=9;
+    arr[2]=9;
+    arr[3]=1;
+    arr[4]=0;
+    arr[5]=3;
 
-       //,11,13,5,6,7};
+
+   // pthread_mutex_init(&lock,NULL);
+    sem_init(&mutex,0,1);
+
     pthread_t tid;
-
-    cmp e;
-    e.left = 0;
-    e.right = SIZE-1;
 
     printf("given array is \n");
     printArray(arr,SIZE);
 
-    sem_init(&mutex,0,1);
-
+    cmp e;
+    e.left = 0;
+    e.right = SIZE-1;
 
     pthread_create(&tid,NULL,mergeSort,&e);
     pthread_join(tid,NULL);
