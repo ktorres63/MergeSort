@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
-#define SIZE 6
+#define SIZE 100
 
 int arr[SIZE];
 sem_t mutex;
@@ -37,11 +37,11 @@ void merge(int l, int m, int r){
     i = 0;
     //initiañ index of second subarray
     j = 0;
-
     //initial index of merged subarray
     k = l;
-    sem_wait(&mutex);
-    //pthread_mutex_lock(&lock);
+   // sem_wait(&mutex);
+    pthread_mutex_lock(&lock);
+
     while(i < n1 && j < n2){
         if(L[i] <= R[j]){
             arr[k] = L[i];
@@ -67,8 +67,8 @@ void merge(int l, int m, int r){
         j++;
         k++;
     }
-    //pthread_mutex_unlock(&lock);
-    sem_post(&mutex);
+    pthread_mutex_unlock(&lock);
+    //sem_post(&mutex);
 }
 
 
@@ -79,7 +79,6 @@ void* mergeSort(void* a){
     int r = g->right;
     pthread_t tle, tri;
 
-//    pthread_mutex_unlock(&lock);
     if(l < r){
         int m = l+(r-l)/2;
 
@@ -111,12 +110,12 @@ void printArray(int A[], int size){
 }
 
 int main(){
-    /*
+
     srand(time(NULL));
     for(int i=0;i<SIZE;i++){
-        arr[i] = rand()%10+1;
+        arr[i] = rand()%9;
     }
-*/
+/*
     arr[0]=10;
     arr[1]=9;
     arr[2]=9;
@@ -124,7 +123,7 @@ int main(){
     arr[4]=0;
     arr[5]=3;
 
-
+*/
    // pthread_mutex_init(&lock,NULL);
     sem_init(&mutex,0,1);
 
